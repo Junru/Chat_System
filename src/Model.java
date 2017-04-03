@@ -1,21 +1,23 @@
 import java.util.*;
 
-import user.MessageUser;
+
 
 
 public class Model {
 
-	private ArrayList <MessageUser> listUser;
+	private HashSet <MessageUser> listUser;
 	
 	public Model() {
-		this.listUser = new ArrayList <MessageUser> ();
+		this.listUser = new HashSet <MessageUser> ();
 	}
 	
 	public void setUser(MessageUser user) {
-		this.listUser.add(user);
-		//Confirm double same user message and update list
-		this.listUser = updateUser(listUser);
+
+			this.listUser.add(user);
 		
+		
+		//Confirm double same user message and update list
+		//this.listUser = updateUser(listUser);	
 	}
 	
 	private ArrayList <MessageUser> updateUser (ArrayList <MessageUser> oldList) {
@@ -23,4 +25,10 @@ public class Model {
 		ArrayList <MessageUser> newList = new ArrayList <MessageUser> (set);
 		return newList;
 	}
+
+	public HashSet <MessageUser> getListUser() {
+		return listUser;
+	}
+	
+	
 }

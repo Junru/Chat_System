@@ -1,7 +1,8 @@
 import java.io.*;
 import java.net.*;
+import java.util.Iterator;
 
-import user.MessageUser;
+
 
 
 public class ReceiveAliveSocket extends Thread {
@@ -10,6 +11,7 @@ public class ReceiveAliveSocket extends Thread {
 	private MulticastSocket multicastSocket;
 	//Flag of thread for stop
 	public volatile boolean exit = false;
+	public static int i=0;
 	
 	public ReceiveAliveSocket(Model model, MulticastSocket mcs) {
 		this.model = model;
@@ -19,8 +21,15 @@ public class ReceiveAliveSocket extends Thread {
 	public void run() {
 		while(!exit) {
 			MessageUser recvMessage = receiveAlive();
-			if (recvMessage != null) 
-				model.setUser(recvMessage);						
+			if (recvMessage != null) {
+				model.setUser(recvMessage);
+				i++;
+				System.out.println(i);
+				for(Iterator <MessageUser> it = model.getListUser().iterator(); it.hasNext(); ){
+					System.out.println(it.next());
+				}
+				
+			}
 		}
 	}
 

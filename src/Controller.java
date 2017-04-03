@@ -1,7 +1,6 @@
 import java.io.*;
 import java.net.*;
 
-import user.MessageUser;
 
 
 public class Controller {
@@ -19,24 +18,27 @@ public class Controller {
 	public Controller (String host) throws UnknownHostException {
 			this.group = InetAddress.getByName(host);
 			this.ihmLogin = new IHMLogin(this);
+			this.ihmLogin.setVisible(true);
 	}
 	public void connexion(String pseudo, int portLocal) {
 		
 		try {
 			multicastSocket = new MulticastSocket(portGroup);
 			multicastSocket.joinGroup(group);
+			//multicastSocket.setLoopbackMode(false);
 			//create model for receive message
 			this.model = new Model();
 			//local ip address
-			InetAddress local = multicastSocket.getInetAddress();
+			InetAddress local = InetAddress.getLocalHost();
 			//Construire le packet MessageUser à envoyer dans le groupe
-			MessageUser hello = new MessageUser(pseudo, local, portLocal, MessageUser.typeConnect.CONNECTED);
-			
+			MessageUser hello;
+			hello = new MessageUser(pseudo, local, portLocal, MessageUser.typeConnect.CONNECTED);
 			//Cacher le fenetre de connexion
 			ihmLogin.setVisible(false);
 			
 			//Ouvrir autre fenetre de IHM en connecté
 			this.ihmConnected = new IHMConnected(pseudo, local.getHostAddress(), Integer.toString(portLocal), this);
+			this.ihmConnected.setVisible(true);
 			//Start thread for send alive User message to another group
 			sendThread = new SendAliveSocket(hello, multicastSocket, group, portGroup);
 			sendThread.start();
@@ -49,7 +51,25 @@ public class Controller {
 			
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
+			if (multicastSocket != null) {
+				try {
+					multicastSocket.leaveGroup(group);
+					multicastSocket.close();
+					//stop sendThread
+					sendThread.exit = true;
+					sendThread.join();	
+					//stop receiveThread
+					receiveThread.exit = true;
+					receiveThread.join();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				catch (InterruptedException e2) {
+					e2.printStackTrace();
+				}
+				
+			}
+		} /*finally {
 			if (multicastSocket != null) {
 				try {
 					multicastSocket.leaveGroup(group);
@@ -68,7 +88,7 @@ public class Controller {
 				}
 				
 			}
-		}
+		}*/
 		
 	}
 	

@@ -6,7 +6,7 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 
-import user.MessageUser;
+
 
 
 public class SendAliveSocket extends Thread {
@@ -28,7 +28,7 @@ public class SendAliveSocket extends Thread {
 		while (!exit) {
 			keepalive();
 			try {
-				sleep(2000);
+				sleep(10000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
