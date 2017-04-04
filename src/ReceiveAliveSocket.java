@@ -27,8 +27,7 @@ public class ReceiveAliveSocket extends Thread {
 				System.out.println(i);
 				for(Iterator <MessageUser> it = model.getListUser().iterator(); it.hasNext(); ){
 					System.out.println(it.next());
-				}
-				
+				}	
 			}
 		}
 	}

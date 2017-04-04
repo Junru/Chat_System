@@ -5,17 +5,26 @@ import java.net.*;
 
 public class Controller {
 
+	//---------------------------------Atribut System----------------------------------------
+	private InetAddress local;
 	private InetAddress group;
 	private int portGroup = 4000;
 	private MulticastSocket multicastSocket;
 	private Model model;
+	//---------------------------------IHM---------------------------------------------
 	private IHMLogin ihmLogin;
-	private IHMConnected ihmConnected;
+	private Observer ihmConnected;
 	private IHMConversation ihmConversation;
+	//---------------------------------------------------------------------------------
+	
+	//---------------------------------Thread-Alive------------------------------------
 	private SendAliveSocket sendThread;
 	private ReceiveAliveSocket receiveThread;
+	//---------------------------------------------------------------------------------
+	
 	
 	public Controller (String host) throws UnknownHostException {
+			this.local =  InetAddress.getLocalHost();
 			this.group = InetAddress.getByName(host);
 			this.ihmLogin = new IHMLogin(this);
 			this.ihmLogin.setVisible(true);
@@ -28,8 +37,7 @@ public class Controller {
 			//multicastSocket.setLoopbackMode(false);
 			//create model for receive message
 			this.model = new Model();
-			//local ip address
-			InetAddress local = InetAddress.getLocalHost();
+			
 			//Construire le packet MessageUser à envoyer dans le groupe
 			MessageUser hello;
 			hello = new MessageUser(pseudo, local, portLocal, MessageUser.typeConnect.CONNECTED);
@@ -38,7 +46,9 @@ public class Controller {
 			
 			//Ouvrir autre fenetre de IHM en connecté
 			this.ihmConnected = new IHMConnected(pseudo, local.getHostAddress(), Integer.toString(portLocal), this);
-			this.ihmConnected.setVisible(true);
+			//this.ihmConnected.setVisible(true);
+			//attache model and observer IHM
+			model.registerObserver(this.ihmConnected);
 			//Start thread for send alive User message to another group
 			sendThread = new SendAliveSocket(hello, multicastSocket, group, portGroup);
 			sendThread.start();
@@ -92,11 +102,11 @@ public class Controller {
 		
 	}
 	
-	public void deconnect(String pseudo, int portLocal) {
+	public void deconnect(String pseudo, int portLocal)  {
 		
-		InetAddress local = multicastSocket.getInetAddress();
 		MessageUser bye = new MessageUser(pseudo, local, portLocal, MessageUser.typeConnect.DECONNECTED);
 		sendThread.setUser(bye);
+		
 		try {
 			//stop sendThread
 			sendThread.exit = true;
@@ -113,7 +123,6 @@ public class Controller {
 				multicastSocket.leaveGroup(group);
 				multicastSocket.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

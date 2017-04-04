@@ -4,6 +4,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
@@ -13,14 +14,17 @@ import javax.swing.JTextField;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.util.*;
 
 
-public class IHMConnected extends JFrame {
+public class IHMConnected extends JFrame implements Observer {
 
 	private JPanel contentPane;
 	private JTextField userName;
 	private JTextField adressIP;
 	private JTextField localPort;
+	private DefaultListModel lmName = new DefaultListModel();
+	private List <String> display = new ArrayList <String> ();
 
 	/**
 	 * Launch the application.
@@ -42,6 +46,8 @@ public class IHMConnected extends JFrame {
 	 * Create the frame.
 	 */
 	public IHMConnected(String pseudo, String adress, String port, Controller controller) {
+		
+		//IHM component
 		setTitle(pseudo + " : En ligne");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 585, 449);
@@ -57,8 +63,8 @@ public class IHMConnected extends JFrame {
 		//message bienvenue
 		JOptionPane.showMessageDialog(null, "Hello "+pseudo+" Vous etes connecte");
 		
-		String[] args = {"apple", "pear", "orange", "cuck"};
-		JList list = new JList(args);
+		//String[] args = {"apple", "pear", "orange", "cuck"};
+		JList list = new JList(lmName);
 		scrollPane.setViewportView(list);
 		
 		JLabel lblUtilisateurs = new JLabel("Utilisateurs");
@@ -109,5 +115,22 @@ public class IHMConnected extends JFrame {
 		localPort.setText(port);
 		contentPane.add(localPort);
 		localPort.setColumns(10);
+		
+		this.setVisible(true);
+	}
+
+	@Override
+	public void update(HashSet <MessageUser> newList) {
+		this.display.removeAll(display);
+		for (Iterator it = newList.iterator(); it.hasNext();) {
+				this.display.add(((MessageUser) it.next()).getPseudo());
+		}
+		
+		
+		lmName.removeAllElements();
+		for (String tmpName : display) {
+			lmName.addElement(tmpName);
+		}
+		
 	}
 }
