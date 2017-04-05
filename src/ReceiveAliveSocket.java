@@ -23,11 +23,13 @@ public class ReceiveAliveSocket extends Thread {
 			MessageUser recvMessage = receiveAlive();
 			if (recvMessage != null) {
 				model.setUser(recvMessage);
+				
 				i++;
 				System.out.println(i);
-				for(Iterator <MessageUser> it = model.getListUser().iterator(); it.hasNext(); ){
+				for(Iterator <UserRemote> it = model.getListUser().iterator(); it.hasNext(); ){
 					System.out.println(it.next());
-				}	
+				}
+				
 			}
 		}
 	}

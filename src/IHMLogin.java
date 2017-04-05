@@ -18,6 +18,7 @@ public class IHMLogin extends JFrame {
 	private JTextField textName;
 	private JTextField textPort;
 	private Controller controller;
+	private JTextField textStatut;
 
 	/**
 	 * Launch the application.
@@ -51,7 +52,7 @@ public class IHMLogin extends JFrame {
 		JButton logon = new JButton("Log on");
 		logon.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				controller.connexion(textName.getText(), Integer.parseInt(textPort.getText()));
+				controller.connexion(textName.getText(), Integer.parseInt(textPort.getText()), textStatut.getText());
 			}
 		});
 		logon.setBounds(79, 347, 97, 25);
@@ -78,6 +79,14 @@ public class IHMLogin extends JFrame {
 		JButton btnQuitter = new JButton("Quitter");
 		btnQuitter.setBounds(181, 347, 97, 25);
 		contentPane.add(btnQuitter);
+		
+		textStatut = new JTextField();
+		textStatut.setBounds(113, 134, 116, 22);
+		contentPane.add(textStatut);
+		textStatut.setColumns(10);
+		
+		JLabel statut = new JLabel("Statut :");
+		statut.setBounds(33, 137, 56, 16);
+		contentPane.add(statut);
 	}
-
 }

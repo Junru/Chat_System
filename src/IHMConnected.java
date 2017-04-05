@@ -1,10 +1,12 @@
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.Image;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
@@ -23,9 +25,12 @@ public class IHMConnected extends JFrame implements Observer {
 	private JTextField userName;
 	private JTextField adressIP;
 	private JTextField localPort;
+	private JTextField statutText;
 	private DefaultListModel lmName = new DefaultListModel();
-	private List <String> display = new ArrayList <String> ();
-
+	
+	private List <UserRemote> display = new ArrayList <UserRemote> ();
+	private JTextField statut;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -33,7 +38,7 @@ public class IHMConnected extends JFrame implements Observer {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					IHMConnected frame = new IHMConnected("Huang", "127.0.0.1", "5000", null);
+					IHMConnected frame = new IHMConnected("Huang", "127.0.0.1", "5000","statut", null);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -45,33 +50,35 @@ public class IHMConnected extends JFrame implements Observer {
 	/**
 	 * Create the frame.
 	 */
-	public IHMConnected(String pseudo, String adress, String port, Controller controller) {
+	public IHMConnected(String pseudo, String adress, String port, String statut,Controller controller) {
 		
 		//IHM component
 		setTitle(pseudo + " : En ligne");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 585, 449);
+		setBounds(100, 100, 698, 494);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(360, 49, 195, 340);
+		scrollPane.setBounds(368, 27, 300, 385);
 		contentPane.add(scrollPane);
 		
 		//message bienvenue
 		JOptionPane.showMessageDialog(null, "Hello "+pseudo+" Vous etes connecte");
 		
-		//String[] args = {"apple", "pear", "orange", "cuck"};
-		JList list = new JList(lmName);
+
+		JList list = new JList();
+		list.setModel(lmName);
+		list.setCellRenderer(new Renderer());
 		scrollPane.setViewportView(list);
 		
 		JLabel lblUtilisateurs = new JLabel("Utilisateurs");
 		scrollPane.setColumnHeaderView(lblUtilisateurs);
 		
 		JButton btnChat = new JButton("Chat");
-		btnChat.setBounds(58, 364, 97, 25);
+		btnChat.setBounds(39, 387, 97, 25);
 		contentPane.add(btnChat);
 		
 		JButton btnLogOff = new JButton("Log off");
@@ -80,7 +87,7 @@ public class IHMConnected extends JFrame implements Observer {
 				controller.deconnect(pseudo, Integer.parseInt(port));
 			}
 		});
-		btnLogOff.setBounds(188, 364, 97, 25);
+		btnLogOff.setBounds(213, 387, 97, 25);
 		contentPane.add(btnLogOff);
 		
 		JLabel lblUserName = new JLabel("User name :");
@@ -116,19 +123,34 @@ public class IHMConnected extends JFrame implements Observer {
 		contentPane.add(localPort);
 		localPort.setColumns(10);
 		
+		JLabel lblStatut = new JLabel("Statut :");
+		lblStatut.setBounds(58, 245, 56, 16);
+		contentPane.add(lblStatut);
+		
+		statutText = new JTextField();
+		statutText.setEditable(false);
+		statutText.setBounds(169, 242, 116, 22);
+		statutText.setText(statut);
+		contentPane.add(statutText);
+		statutText.setColumns(10);
+		
 		this.setVisible(true);
 	}
 
-	@Override
-	public void update(HashSet <MessageUser> newList) {
+
+	public void update(HashSet <UserRemote> newList) {
 		this.display.removeAll(display);
 		for (Iterator it = newList.iterator(); it.hasNext();) {
-				this.display.add(((MessageUser) it.next()).getPseudo());
+				//ImageIcon status = new ImageIcon("F:\\OM2M\\ChatSystem\\src\\status1.jpg");
+				//status.setImage(status.getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
+				//this.display.add(new UserRemote(((UserRemote) it.next()).getName(), status));
+				this.display.add((UserRemote) it.next());
 		}
 		
 		
 		lmName.removeAllElements();
-		for (String tmpName : display) {
+		lmName.clear();
+		for (UserRemote tmpName : display) {
 			lmName.addElement(tmpName);
 		}
 		

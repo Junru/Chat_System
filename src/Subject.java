@@ -13,7 +13,7 @@ public abstract class Subject {
 		if (index >= 0) 
 			observers.remove(observer);
 	}
-	public void notifyObserver(HashSet <MessageUser> newList) {
+	public void notifyObserver(HashSet <UserRemote> newList) {
 		for (Observer observer : observers) {
 			observer.update(newList);
 		}

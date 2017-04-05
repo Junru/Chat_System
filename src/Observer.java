@@ -2,5 +2,5 @@ import java.util.HashSet;
 
 
 public interface Observer {
-	public void update(HashSet <MessageUser> newList);
+	public void update(HashSet <UserRemote> newList);
 }

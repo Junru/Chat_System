@@ -10,6 +10,7 @@ public class Controller {
 	private InetAddress group;
 	private int portGroup = 4000;
 	private MulticastSocket multicastSocket;
+	//private Model model;
 	private Model model;
 	//---------------------------------IHM---------------------------------------------
 	private IHMLogin ihmLogin;
@@ -29,7 +30,7 @@ public class Controller {
 			this.ihmLogin = new IHMLogin(this);
 			this.ihmLogin.setVisible(true);
 	}
-	public void connexion(String pseudo, int portLocal) {
+	public void connexion(String pseudo, int portLocal, String statut) {
 		
 		try {
 			multicastSocket = new MulticastSocket(portGroup);
@@ -41,14 +42,17 @@ public class Controller {
 			//Construire le packet MessageUser à envoyer dans le groupe
 			MessageUser hello;
 			hello = new MessageUser(pseudo, local, portLocal, MessageUser.typeConnect.CONNECTED);
+			hello.setStatut(statut);
+			
 			//Cacher le fenetre de connexion
 			ihmLogin.setVisible(false);
 			
 			//Ouvrir autre fenetre de IHM en connecté
-			this.ihmConnected = new IHMConnected(pseudo, local.getHostAddress(), Integer.toString(portLocal), this);
+			this.ihmConnected = new IHMConnected(pseudo, local.getHostAddress(), Integer.toString(portLocal), statut,this);
 			//this.ihmConnected.setVisible(true);
 			//attache model and observer IHM
 			model.registerObserver(this.ihmConnected);
+			
 			//Start thread for send alive User message to another group
 			sendThread = new SendAliveSocket(hello, multicastSocket, group, portGroup);
 			sendThread.start();

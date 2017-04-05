@@ -6,16 +6,15 @@ import java.util.*;
 public class Model extends Subject {
 
 	private List <Observer> observers = new ArrayList <Observer> ();
-	
-	private HashSet <MessageUser> listUser;
+	private HashSet <UserRemote> listUser;
 	
 	public Model() {
-		this.listUser = new HashSet <MessageUser> ();
+		this.listUser = new HashSet <UserRemote> ();
 	}
 	
 	public void setUser(MessageUser user) {
 
-			this.listUser.add(user);
+			this.listUser.add(new UserRemote(user.getPseudo(), user.getIP(), user.getPort(), user.getEtat(), user.getStatut()));
 			//when user changed, observer IHM will change
 			this.notifyObserver(this.listUser);
 		
@@ -30,7 +29,7 @@ public class Model extends Subject {
 	}*/
 
 
-	public HashSet <MessageUser> getListUser() {
+	public HashSet <UserRemote> getListUser() {
 		return listUser;
 	}
 

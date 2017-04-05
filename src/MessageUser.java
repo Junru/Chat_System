@@ -1,5 +1,9 @@
+import java.awt.Image;
 import java.io.Serializable;
 import java.net.InetAddress;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 
 public class MessageUser implements Serializable {
@@ -24,7 +28,7 @@ public class MessageUser implements Serializable {
 	 */
 	private  int port;
 
-	public enum typeConnect {
+	public static enum typeConnect {
 		  CONNECTED,
 		  DECONNECTED;
 	}
@@ -79,6 +83,8 @@ public class MessageUser implements Serializable {
 	public void setStatut(String statut) {
 		this.statut = statut;
 	}
+	
+	
 
 
 	public String toString() {
@@ -86,21 +92,6 @@ public class MessageUser implements Serializable {
 				+ IP + ", port=" + port + ", etat=" + etat + "]";
 	}
 	
-//Rewrite methode for compare message user with Pseudo, if the same pseudo, we consider the same user who send the message
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o.getClass() == MessageUser.class) {
-			MessageUser n = (MessageUser)o;
-			return n.pseudo.equals(pseudo);
-		}
-		return false;
-	}
-	
-	public int hashCode() {
-		return pseudo.hashCode();
-	}
-//-------------------------------------------------------------
+
 
 }
